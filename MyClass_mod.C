@@ -138,40 +138,6 @@ void MyClass_mod::Loop() {
         }
     }
     
-    //TCanvas* c1 = new TCanvas("c1", "Proton Energy", 800, 600);
-    //hE_proton->Draw();
-    //c1->SaveAs("proton_energy.png");
-    
-    //TCanvas* c2 = new TCanvas("c2", "PDG", 800,600);
-    //hPDG->Draw();
-    //c2->SaveAs("PDG.png");
-    
-    //TCanvas* c3 = new TCanvas("c3","Inter", 800, 600);
-    //hinter->Draw();
-    //c3->SaveAs("inter.png");
-    
-    //TCanvas* c4 = new TCanvas("c4", "Ein", 800, 600);
-    //hEin->Draw();
-    //c4->SaveAs("Ein.png");
-    
-    //TCanvas* c5 = new TCanvas("c5", "Total momentum of proton", 800, 600);
-    //hTmom_proton->Draw();
-    //c5->SaveAs("hTmom_proton.png");
-    
-    //TCanvas* c6 = new TCanvas("c6", "Proton momentum px", 800, 600);
-    //hpx_proton->Draw();
-    //c6->SaveAs("hpx_proton");
-    
-    //delete hPDG;
-    //delete hE_proton;
-    //delete hinter;
-    //delete hEin;
-    //delete c1;
-    //delete c2;
-    //delete c3;
-    //delete c4;
-    //delete c5;
-    //delete c6;
     
 
     hwgt->Write();
