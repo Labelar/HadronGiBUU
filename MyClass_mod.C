@@ -54,8 +54,19 @@ void MyClass_mod::Loop() {
     TH1D* hvx_pim = new TH1D("hvx_pim", "Pion- Vertex vx", 100, -10, 10);
     TH1D* hvy_pim = new TH1D("hvy_pim", "Pion- Vertex vy", 100, -10, 10);
     TH1D* hvz_pim = new TH1D("hvz_pim", "Pion- Vertex vz", 100, -10, 10);
-    
 
+
+    //New histograms:
+    const int Nint = 6;
+    const char* cint[Nint] = {"rea","abs","pip","pim","pi0","2pi"};    
+    int Nbins   =    1002;
+    double mine = -0.0005;
+    double maxe =  1.0015;
+    TH1D* hxsec[Nint];
+    for(int i=0;i<Nint;i++){
+      hxsec[i] = new TH1D(Form("hxsec_%s",cint[i]),"",Nbins,mine,maxe);
+    }
+  
     if (fChain == 0) return;
 
     Long64_t nentries = fChain->GetEntriesFast();
@@ -67,8 +78,26 @@ void MyClass_mod::Loop() {
         nb = fChain->GetEntry(jentry);
         nbytes += nb;
 
-        for (int i = 0; i < nparts; i++) {
-            
+
+	if(inter[0] == -999){
+	  if(nparts>1)std::cout<<"=> Warning (inter[0] == -999) events with nparts = "<<nparts<<std::endl;
+	  continue;
+	}
+
+	//first, filling the reaction (total) cross section
+	hxsec[0]->Fill(Ein,wgt);
+	
+	int Npip = 0; //number of pi+
+	int Npim = 0; //number of pi-
+	int Npi0 = 0; //number of pi0
+
+	for (int i = 0; i < nparts; i++) {
+
+	    //counting pions
+  	    if(pdg[i] ==  211) ++Npip;
+  	    if(pdg[i] == -211) ++Npim; 
+  	    if(pdg[i] ==  111) ++Npi0;    
+	  
             hwgt->Fill(wgt);
             hEin->Fill(Ein);
             hnparts->Fill(nparts);
@@ -136,10 +165,31 @@ void MyClass_mod::Loop() {
             }
             
         }
-    }
-    
-    
 
+	//Finding the index of the cross-section type
+	int idx = -1;
+	if(Npip==0 && Npim==0 && Npi0==0) idx = 1;
+	if(Npip==1 && Npim==0 && Npi0==0) idx = 2;
+	if(Npip==0 && Npim==1 && Npi0==0) idx = 3;
+	if(Npip==0 && Npim==0 && Npi0==1) idx = 4;
+	if( (Npip + Npim + Npi0) > 1    ) idx = 5;
+
+	if(idx>0)hxsec[idx]->Fill(Ein,wgt);
+	 
+    }
+
+    fOut->cd();
+    
+    //Storing cross-section wanted histograms:
+    fOut->mkdir("xsec");
+    fOut->cd("xsec");
+    for(int i=0;i<Nint;i++){
+      hxsec[i]->Scale(1./double(fNtrees));
+      hxsec[i]->Write();
+    }
+
+    fOut->cd();
+    
     hwgt->Write();
     hEin->Write();
     hnparts->Write();
