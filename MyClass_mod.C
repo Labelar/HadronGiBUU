@@ -44,6 +44,9 @@ void MyClass_mod::Loop() {
     TH1D* hvx_pip  = new TH1D("hvx_pip", "Pion+ Vertex x",100,-10,10);
     TH1D* hvy_pip = new TH1D("hvy_pip", "Pion+ Vertex y",100,-10,10);
     TH1D* hvz_pip  = new TH1D("hvz_pip", "Pion+ Vertex z",100,-10,10);
+
+    //pi0
+    
     
     //-pion
     TH1D* hE_pim = new TH1D("hE_pim", "Pion- Energy", 100, 0, 1);
@@ -54,6 +57,17 @@ void MyClass_mod::Loop() {
     TH1D* hvx_pim = new TH1D("hvx_pim", "Pion- Vertex vx", 100, -10, 10);
     TH1D* hvy_pim = new TH1D("hvy_pim", "Pion- Vertex vy", 100, -10, 10);
     TH1D* hvz_pim = new TH1D("hvz_pim", "Pion- Vertex vz", 100, -10, 10);
+
+    const int Nint = 5;
+    const char* cint[Nint] = {"proton","neutron","pip","pi0","pim"};
+    int Nbins = 100;
+    double mine = -0.0005;
+    double maxe = 1.0015;
+    TH1D* hE[Nint]
+    for(int i-0;i<Nint;i++){
+      hE[i] = new TH1D(Form("hE_%s", cint[i]),"",Nbins,mine,maxe)
+    }
+
 
 
     //New histograms:
@@ -107,8 +121,8 @@ void MyClass_mod::Loop() {
             
             
             //Proton
-            if (pdg[i] == 2212) {
-            hE_proton->Fill(E[i], wgt);
+            else if (pdg[i] == 2212) {
+            hE[0]->Fill(E[i], wgt);
             double totalmomentum_proton = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
             hTmom_proton->Fill(totalmomentum_proton, wgt);
             hpx_proton->Fill(px[i], wgt);
@@ -121,8 +135,8 @@ void MyClass_mod::Loop() {
             }
             
             //Neutron
-            if (pdg[i] == 2112) {
-            hE_neutron->Fill(E[i], wgt);
+            else if (pdg[i] == 2112) {
+            hE[1]->Fill(E[i], wgt);
             double totalmomentum_neutron = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
             hTmom_neutron->Fill(totalmomentum_neutron, wgt);
             hpx_neutron->Fill(px[i], wgt);
@@ -136,9 +150,9 @@ void MyClass_mod::Loop() {
             
             
             //+pion
-            if (pdg[i] == 211) {
+            else if (pdg[i] == 211) {
             
-            hE_pip->Fill(E[i], wgt);
+            hE[2]->Fill(E[i], wgt);
             double totalmomentum_pip = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
             hTmom_pip->Fill(totalmomentum_pip, wgt);
             hpx_pip->Fill(px[i], wgt);
@@ -150,9 +164,15 @@ void MyClass_mod::Loop() {
             
             }
             
+            //pi0
+            else if (pdg[i] == 111){
+            hE[3]->Fill(E[i],wgt);
+            }
+            
+  
             //-pion
-            if (pdg[i] == -211) {
-            hE_pim->Fill(E[i], wgt);
+            else if (pdg[i] == -211) {
+            hE[4]->Fill(E[i], wgt);
             double totalmomentum_pim = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
             hTmom_pim->Fill(totalmomentum_pim, wgt);
             hpx_pim->Fill(px[i], wgt);
@@ -190,6 +210,16 @@ void MyClass_mod::Loop() {
 
     fOut->cd();
     
+    fOut->mkdir("Energy");
+    fOut->cd("Energy");
+    for(int i=0;i<Nint;i++){
+      hE[i]->Scale(1,/double(fNtrees));
+      hE[i]->Write();
+    }
+
+    fOut->cd();
+
+
     hwgt->Write();
     hEin->Write();
     hnparts->Write();
@@ -201,9 +231,7 @@ void MyClass_mod::Loop() {
     
     
     //Proton
-    
-    
-    hE_proton->Write();
+   // hE_proton->Write();
     hTmom_proton->Write();
     hpx_proton->Write();
     hpy_proton->Write();
@@ -213,7 +241,7 @@ void MyClass_mod::Loop() {
     hvz_proton->Write();
     
     //Neutron
-    hE_neutron->Write();
+   // hE_neutron->Write();
     hTmom_neutron->Write();
     hpx_neutron->Write();
     hpy_neutron->Write();
@@ -224,7 +252,7 @@ void MyClass_mod::Loop() {
     
     
     //+pion
-    hE_pip->Write();
+    //hE_pip->Write();
     hTmom_pip->Write();
     hpx_pip->Write();
     hpy_pip->Write();
@@ -234,7 +262,7 @@ void MyClass_mod::Loop() {
     hvz_pip->Write();
     
     //-pion
-    hE_pim->Write();
+   // hE_pim->Write();
     hTmom_pim->Write();
     hpx_pim->Write();
     hpy_pim->Write();
@@ -243,6 +271,12 @@ void MyClass_mod::Loop() {
     hvy_pim->Write();
     hvz_pim->Write();
     
+   // TCanvas *c1 = new TCanvas("c1", "Energy distribution", 800,600);
+   // hE_proton->SetTitle("Energy dsitribution");
+   // hE_proton->GetXaxis()->SetTitle("Energy (GeV)");
+    //hE_proton->GetYaxis()->SetTitle("Entries");
+
+
     fOut->Close();
 
 
