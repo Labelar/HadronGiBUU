@@ -119,7 +119,7 @@ void MyClass_mod::Loop() {
             
             
             //Proton
-            else if (pdg[i] == 2212) {
+            if (pdg[i] == 2212) {
             hE[0]->Fill(E[i], wgt);
             double totalmomentum_proton = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
             hTmom_proton->Fill(totalmomentum_proton, wgt);
