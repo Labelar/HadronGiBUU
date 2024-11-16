@@ -61,11 +61,11 @@ void MyClass_mod::Loop() {
     const int ENint = 5;
     const char* Ecint[ENint] = {"proton","neutron","pip","pi0","pim"};
     int ENbins = 100;
-    double mine = -0.0005;
-    double maxe = 1.0015;
+    double Emine = -0.0005;
+    double Emaxe = 1.0015;
     TH1D* hE[ENint];
-    for(int i-0;i<ENint;i++){
-      hE[i] = new TH1D(Form("hE_%s", Ecint[i]),"",ENbins,mine,maxe)
+    for(int i=0;i<ENint;i++){
+      hE[i] = new TH1D(Form("hE_%s", Ecint[i]),"",ENbins,Emine,Emaxe);
     }
 
 
@@ -74,9 +74,11 @@ void MyClass_mod::Loop() {
     const int NintXsec = 6;
     const char* cintXsec[NintXsec] = {"rea","abs","pip","pim","pi0","2pi"};    
     int NbinsXsec   =    1002;
+    double mineXsec = -0.0005;
+    double maxeXsec = 1.0015;
     TH1D* hxsec[NintXsec];
     for(int i=0;i<NintXsec;i++){
-      hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mine,maxe);
+      hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mineXsec,maxeXsec);
     }
   
     if (fChain == 0) return;
@@ -201,7 +203,7 @@ void MyClass_mod::Loop() {
     //Storing cross-section wanted histograms:
     fOut->mkdir("xsec");
     fOut->cd("xsec");
-    for(int i=0;i<Nint;i++){
+    for(int i=0;i<NintXsec;i++){
       hxsec[i]->Scale(1./double(fNtrees));
       hxsec[i]->Write();
     }
@@ -210,7 +212,7 @@ void MyClass_mod::Loop() {
     
     fOut->mkdir("Energy");
     fOut->cd("Energy");
-    for(int i=0;i<Nint;i++){
+    for(int i=0;i<ENint;i++){
       hE[i]->Scale(1./double(fNtrees));
       hE[i]->Write();
     }
