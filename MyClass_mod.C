@@ -58,27 +58,25 @@ void MyClass_mod::Loop() {
     TH1D* hvy_pim = new TH1D("hvy_pim", "Pion- Vertex vy", 100, -10, 10);
     TH1D* hvz_pim = new TH1D("hvz_pim", "Pion- Vertex vz", 100, -10, 10);
 
-    const int Nint = 5;
-    const char* cint[Nint] = {"proton","neutron","pip","pi0","pim"};
-    int Nbins = 100;
+    const int ENint = 5;
+    const char* Ecint[ENint] = {"proton","neutron","pip","pi0","pim"};
+    int ENbins = 100;
     double mine = -0.0005;
     double maxe = 1.0015;
-    TH1D* hE[Nint]
-    for(int i-0;i<Nint;i++){
-      hE[i] = new TH1D(Form("hE_%s", cint[i]),"",Nbins,mine,maxe)
+    TH1D* hE[ENint];
+    for(int i-0;i<ENint;i++){
+      hE[i] = new TH1D(Form("hE_%s", Ecint[i]),"",ENbins,mine,maxe)
     }
 
 
 
     //New histograms:
-    const int Nint = 6;
-    const char* cint[Nint] = {"rea","abs","pip","pim","pi0","2pi"};    
-    int Nbins   =    1002;
-    double mine = -0.0005;
-    double maxe =  1.0015;
-    TH1D* hxsec[Nint];
-    for(int i=0;i<Nint;i++){
-      hxsec[i] = new TH1D(Form("hxsec_%s",cint[i]),"",Nbins,mine,maxe);
+    const int NintXsec = 6;
+    const char* cintXsec[NintXsec] = {"rea","abs","pip","pim","pi0","2pi"};    
+    int NbinsXsec   =    1002;
+    TH1D* hxsec[NintXsec];
+    for(int i=0;i<NintXsec;i++){
+      hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mine,maxe);
     }
   
     if (fChain == 0) return;
@@ -213,7 +211,7 @@ void MyClass_mod::Loop() {
     fOut->mkdir("Energy");
     fOut->cd("Energy");
     for(int i=0;i<Nint;i++){
-      hE[i]->Scale(1,/double(fNtrees));
+      hE[i]->Scale(1./double(fNtrees));
       hE[i]->Write();
     }
 
