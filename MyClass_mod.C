@@ -94,7 +94,7 @@ void MyClass_mod::Loop() {
             if (pdg[i] == 2212) idx = 0;   //proton
             else if (pdg[i] == 2112) idx = 1;  //Neutron
             else if (pdg[i] == 211) idx = 2;   //+Pion
-            else if (pdg[i] == 111) idx 3;   //Pi0
+            else if (pdg[i] == 111) idx = 3;   //Pi0
             else if (pdg[i] == -211) idx = 4;   //-pion
 
             if (idx >= 0) {
