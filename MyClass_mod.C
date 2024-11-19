@@ -45,9 +45,9 @@ void MyClass_mod::Loop() {
     for(int i =0; i < Npart; ++i) {
       for (int j = 0; j < Ncomponents; ++j) {
         hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 500, -10, 10);
-      }
+      }  
     }
-  
+
     if (fChain == 0) return;
 
     Long64_t nentries = fChain->GetEntriesFast();
@@ -100,6 +100,10 @@ void MyClass_mod::Loop() {
             if (idx >= 0) {
               hE[idx]->Fill(E[i], wgt);
               hParticleHist[idx][0]->Fill(totalmomentum, wgt);
+              
+              if (idx == 0){
+                hParticleHist[0][0]->GetXaxis()->SetRangeUser(0,2);
+              }
               
               hParticleHist[idx][1]->Fill(px[i], wgt);
               hParticleHist[idx][2]->Fill(py[i], wgt);
