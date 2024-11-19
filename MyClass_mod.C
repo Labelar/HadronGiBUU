@@ -13,61 +13,20 @@ void MyClass_mod::Loop() {
     TH1D* hinter = new TH1D("hinter", "", 100, -3000, 250000);
     TH1D* hhist =new TH1D("hhist", "", 100,-1, 2); 
 
-    //Proton
-    TH1D* hE_proton = new TH1D("hE_proton", "Proton Energy", 100, 0.75, 1.25);
-    TH1D* hTmom_proton = new TH1D("hTmom_proton", "Total proton momentum", 100, 0, 1.25);
-    TH1D* hpx_proton = new TH1D("hpx_proton", "Proton Momentum px",100,-1,1);
-    TH1D* hpy_proton = new TH1D("hpy_proton", "Proton Momentum py",100,-1,1);
-    TH1D* hpz_proton = new TH1D("hpz_proton", "Proton Momentum pz",100,-2,2);
-    TH1D* hvx_proton = new TH1D("hvx_proton", "Proton Vertex x",100,-10,10);
-    TH1D* hvy_proton = new TH1D("hvy_proton", "Proton Vertex y",100,-10,10);
-    TH1D* hvz_proton = new TH1D("hvz_proton", "Proton Vertex z",100,-10,10);
-    
-    
-    //Neutron
-    TH1D* hE_neutron = new TH1D ("hE_neutron","Neutron Energy",100, 0.5, 2);
-    TH1D* hTmom_neutron = new TH1D("hTmom_neutron", "Total neutron momentum", 100, 0, 2);
-    TH1D* hpx_neutron = new TH1D("hpx_neutron", "Neutron Momentum px",100,-1,1);
-    TH1D* hpy_neutron = new TH1D("hpy_neutron", "Neutron Momentum py",100,-1,1);
-    TH1D* hpz_neutron = new TH1D("hpz_neutron", "Neutron Momentum pz",100,-2,2);
-    TH1D* hvx_neutron = new TH1D("hvx_neutron", "Neutron Vertex x",100,-2,2);
-    TH1D* hvy_neutron = new TH1D("hvy_neutron", "Neutron Vertex y",100,-2,2);
-    TH1D* hvz_neutron = new TH1D("hvz_neutron", "Neutron Vertex z",100,-2,2);
-    
-    
-    //+pion
-    TH1D* hE_pip = new TH1D ("hE_pip","Pion+ Energy",100, 0, 1.5);
-    TH1D* hTmom_pip = new TH1D("hTmom_pip", "Total Pion+ momentum", 100, 0,1.5);
-    TH1D* hpx_pip  = new TH1D("hpx_pip", "Pion+ Momentum px",100,-1,1);
-    TH1D* hpy_pip  = new TH1D("hpy_pip", "Pion+ Momentum py",100,-1,1);
-    TH1D* hpz_pip  = new TH1D("hpz_pip", "Pion+ Momentum pz",100,-2,2);
-    TH1D* hvx_pip  = new TH1D("hvx_pip", "Pion+ Vertex x",100,-10,10);
-    TH1D* hvy_pip = new TH1D("hvy_pip", "Pion+ Vertex y",100,-10,10);
-    TH1D* hvz_pip  = new TH1D("hvz_pip", "Pion+ Vertex z",100,-10,10);
+    const int Npart = 5;
+    const char* particles[Npart] = {"proton", "neutron", "pip", "pi0", "pim"};
+    const char* properties[] = {"Tmom", "px", "py", "pz", "vz", "vy", "vz"};
 
-    //pi0
-    
-    
-    //-pion
-    TH1D* hE_pim = new TH1D("hE_pim", "Pion- Energy", 100, 0, 1);
-    TH1D* hTmom_pim = new TH1D("hTmom_pim", "Total Pion- momentum", 100, 0, 2);
-    TH1D* hpx_pim = new TH1D("hpx_pim", "Pion- Momentum px", 100, -2, 2);
-    TH1D* hpy_pim = new TH1D("hpy_pim", "Pion- Momentum py", 100, -2, 2);
-    TH1D* hpz_pim = new TH1D("hpz_pim", "Pion- Momentum pz", 100, -2, 2);
-    TH1D* hvx_pim = new TH1D("hvx_pim", "Pion- Vertex vx", 100, -10, 10);
-    TH1D* hvy_pim = new TH1D("hvy_pim", "Pion- Vertex vy", 100, -10, 10);
-    TH1D* hvz_pim = new TH1D("hvz_pim", "Pion- Vertex vz", 100, -10, 10);
-
+    //Energy histograms
     const int ENint = 5;
     const char* Ecint[ENint] = {"proton","neutron","pip","pi0","pim"};
-    int ENbins = 100;
+    int ENbins = 1000;
     double Emine = -0.0005;
-    double Emaxe = 1.0015;
+    double Emaxe = 2;
     TH1D* hE[ENint];
     for(int i=0;i<ENint;i++){
       hE[i] = new TH1D(Form("hE_%s", Ecint[i]),"",ENbins,Emine,Emaxe);
     }
-
 
 
     //New histograms:
@@ -79,6 +38,14 @@ void MyClass_mod::Loop() {
     TH1D* hxsec[NintXsec];
     for(int i=0;i<NintXsec;i++){
       hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mineXsec,maxeXsec);
+    }
+
+    const int Ncomponents = 7
+    TH1D* hParticleHist[Npart][Ncomponents];
+    for(int i =0; i < Npart; ++i) {
+      for (int j = 0; j < Ncomponents; ++j) {
+        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j], "", 100, -10, 10));
+      }
     }
   
     if (fChain == 0) return;
@@ -107,6 +74,8 @@ void MyClass_mod::Loop() {
 
 	for (int i = 0; i < nparts; i++) {
 
+
+
 	    //counting pions
   	    if(pdg[i] ==  211) ++Npip;
   	    if(pdg[i] == -211) ++Npim; 
@@ -119,69 +88,25 @@ void MyClass_mod::Loop() {
             hinter->Fill(inter[i]);
             hhist->Fill(hist[i]);
             
-            
-            //Proton
-            if (pdg[i] == 2212) {
-            hE[0]->Fill(E[i], wgt);
-            double totalmomentum_proton = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
-            hTmom_proton->Fill(totalmomentum_proton, wgt);
-            hpx_proton->Fill(px[i], wgt);
-            hpy_proton->Fill(py[i], wgt);
-            hpz_proton->Fill(pz[i], wgt);
-            hvx_proton->Fill(vx[i], wgt);
-            hvy_proton->Fill(vy[i], wgt);
-            hvz_proton->Fill(vz[i], wgt);
-            
-            }
-            
-            //Neutron
-            else if (pdg[i] == 2112) {
-            hE[1]->Fill(E[i], wgt);
-            double totalmomentum_neutron = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
-            hTmom_neutron->Fill(totalmomentum_neutron, wgt);
-            hpx_neutron->Fill(px[i], wgt);
-            hpy_neutron->Fill(py[i], wgt);
-            hpz_neutron->Fill(pz[i], wgt);
-            hvx_neutron->Fill(pz[i], wgt);
-            hvy_neutron->Fill(vx[i], wgt);
-            hvz_neutron->Fill(vy[i], wgt);
-            
-            }
-            
-            
-            //+pion
-            else if (pdg[i] == 211) {
-            
-            hE[2]->Fill(E[i], wgt);
-            double totalmomentum_pip = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
-            hTmom_pip->Fill(totalmomentum_pip, wgt);
-            hpx_pip->Fill(px[i], wgt);
-            hpy_pip->Fill(py[i], wgt);
-            hpz_pip->Fill(pz[i], wgt);
-            hvx_pip->Fill(vx[i], wgt);
-            hvy_pip->Fill(vy[i], wgt);
-            hvz_pip->Fill(vz[i], wgt);
-            
-            }
-            
-            //pi0
-            else if (pdg[i] == 111){
-            hE[3]->Fill(E[i],wgt);
-            }
-            
-  
-            //-pion
-            else if (pdg[i] == -211) {
-            hE[4]->Fill(E[i], wgt);
-            double totalmomentum_pim = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
-            hTmom_pim->Fill(totalmomentum_pim, wgt);
-            hpx_pim->Fill(px[i], wgt);
-            hpy_pim->Fill(py[i], wgt);
-            hpz_pim->Fill(pz[i], wgt);
-            hvx_pim->Fill(vx[i], wgt);
-            hvy_pim->Fill(vy[i], wgt);
-            hvz_pim->Fill(vz[i], wgt);
-            
+            double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
+
+            int idx = -1
+            if (pdg[i] == 2212) idx = 0;   //proton
+            else if (pdg[i] == 2112) idx = 1;  //Neutron
+            else if (pdg[i] == 211) idx = 2;   //+Pion
+            else if (pdg[i] == 111) idx 3;   //Pi0
+            else if (pdg[i] == -211) idx = 4;   //-pion
+
+            if (idx >= 0) {
+              hE[idx]->Fill(E[i], wgt);
+              hParticleHist[idx][0]->Fill(totalmomentum, wgt);
+              
+              hParticleHist[idx][1]->Fill(px[i], wgt);
+              hParticleHist[idx][2]->Fill(py[i], wgt);
+              hParticleHist[idx][3]->Fill(pz[i], wgt);
+              hParticleHist[idx][4]->Fill(px[i], wgt);
+              hParticleHist[idx][5]->Fill(vy[i], wgt);
+              hParticleHist[idx][6]->Fill(vz[i], wgt);
             }
             
         }
@@ -219,6 +144,15 @@ void MyClass_mod::Loop() {
 
     fOut->cd();
 
+    fOut->mkdir("Components");
+    fOut->cd("Components");
+    for(int i =0; i < Npart; ++i) {
+      for (int j = 0; j < Ncomponents; ++j){
+        hParticleHist[i][j]->Write();
+      }
+    }
+
+    fOut->cd();
 
     hwgt->Write();
     hEin->Write();
@@ -228,53 +162,6 @@ void MyClass_mod::Loop() {
     hhist->Write();
     
     
-    
-    
-    //Proton
-   // hE_proton->Write();
-    hTmom_proton->Write();
-    hpx_proton->Write();
-    hpy_proton->Write();
-    hpz_proton->Write();
-    hvx_proton->Write();
-    hvy_proton->Write();
-    hvz_proton->Write();
-    
-    //Neutron
-   // hE_neutron->Write();
-    hTmom_neutron->Write();
-    hpx_neutron->Write();
-    hpy_neutron->Write();
-    hpz_neutron->Write();
-    hvx_neutron->Write();
-    hvy_neutron->Write();
-    hvz_neutron->Write();
-    
-    
-    //+pion
-    //hE_pip->Write();
-    hTmom_pip->Write();
-    hpx_pip->Write();
-    hpy_pip->Write();
-    hpz_pip->Write();
-    hvx_pip->Write();
-    hvy_pip->Write();
-    hvz_pip->Write();
-    
-    //-pion
-   // hE_pim->Write();
-    hTmom_pim->Write();
-    hpx_pim->Write();
-    hpy_pim->Write();
-    hpz_pim->Write();
-    hvx_pim->Write();
-    hvy_pim->Write();
-    hvz_pim->Write();
-    
-   // TCanvas *c1 = new TCanvas("c1", "Energy distribution", 800,600);
-   // hE_proton->SetTitle("Energy dsitribution");
-   // hE_proton->GetXaxis()->SetTitle("Energy (GeV)");
-    //hE_proton->GetYaxis()->SetTitle("Entries");
 
 
     fOut->Close();
