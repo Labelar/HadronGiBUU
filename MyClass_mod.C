@@ -101,10 +101,10 @@ void MyClass_mod::Loop() {
               hE[idx]->Fill(E[i], wgt);
               hParticleHist[idx][0]->Fill(totalmomentum, wgt);
               
-              if (idx == 0){
+              if (idx == 0) {
                 hParticleHist[0][0]->GetXaxis()->SetRangeUser(0,2);
               }
-              
+
               hParticleHist[idx][1]->Fill(px[i], wgt);
               hParticleHist[idx][2]->Fill(py[i], wgt);
               hParticleHist[idx][3]->Fill(pz[i], wgt);
