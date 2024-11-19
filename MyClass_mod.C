@@ -44,7 +44,7 @@ void MyClass_mod::Loop() {
     TH1D* hParticleHist[Npart][Ncomponents];
     for(int i =0; i < Npart; ++i) {
       for (int j = 0; j < Ncomponents; ++j) {
-        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j], "", 100, -10, 10));
+        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 100, -10, 10);
       }
     }
   
