@@ -44,7 +44,7 @@ void MyClass_mod::Loop() {
     TH1D* hParticleHist[Npart][Ncomponents];
     for(int i =0; i < Npart; ++i) {
       for (int j = 0; j < Ncomponents; ++j) {
-        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 500, -10, 10);
+        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 750, -10, 10);
       }  
     }
 
@@ -103,6 +103,38 @@ void MyClass_mod::Loop() {
               
               if (idx == 0) {
                 hParticleHist[0][0]->GetXaxis()->SetRangeUser(0,2);
+                hParticleHist[0][1]->GetXaxis()->SetRangeUser(-1.4,1.4);
+                hParticleHist[0][2]->GetXaxis()->SetRangeUser(-1.4,1.4);
+                hParticleHist[0][3]->GetXaxis()->SetRangeUser(-1.4,1.4);
+                hParticleHist[0][4]->GetXaxis()->SetRangeUser(-1.4,1.4);
+              }
+              if (idx == 1) {
+                hParticleHist[1][0]->GetXaxis()->SetRangeUser(0,2);
+                hParticleHist[1][1]->GetXaxis()->SetRangeUser(-1.4,1.4);
+                hParticleHist[1][2]->GetXaxis()->SetRangeUser(-1.4,1.4);
+                hParticleHist[1][3]->GetXaxis()->SetRangeUser(-1.2,2);
+                hParticleHist[1][4]->GetXaxis()->SetRangeUser(-1.4,1.4);
+              }
+              if (idx == 2) {
+                hParticleHist[2][0]->GetXaxis()->SetRangeUser(0,1.4);
+                hParticleHist[2][1]->GetXaxis()->SetRangeUser(-1,1);
+                hParticleHist[2][2]->GetXaxis()->SetRangeUser(-1,1);
+                hParticleHist[2][3]->GetXaxis()->SetRangeUser(-1,1.3);
+                hParticleHist[2][4]->GetXaxis()->SetRangeUser(-1,1);
+              }
+              if (idx == 3) {
+                hParticleHist[3][0]->GetXaxis()->SetRangeUser(0,1.3);
+                hParticleHist[3][1]->GetXaxis()->SetRangeUser(-1,1);
+                hParticleHist[3][2]->GetXaxis()->SetRangeUser(-1,1);
+                hParticleHist[3][3]->GetXaxis()->SetRangeUser(-1,1.3);
+                hParticleHist[3][4]->GetXaxis()->SetRangeUser(-1,1);
+              }
+              if (idx == 4) {
+                hParticleHist[4][0]->GetXaxis()->SetRangeUser(0,1.2);
+                hParticleHist[4][1]->GetXaxis()->SetRangeUser(-1,1);
+                hParticleHist[4][2]->GetXaxis()->SetRangeUser(-1,1);
+                hParticleHist[4][3]->GetXaxis()->SetRangeUser(-1,1.3);
+                hParticleHist[4][4]->GetXaxis()->SetRangeUser(-1,1);
               }
 
               hParticleHist[idx][1]->Fill(px[i], wgt);
