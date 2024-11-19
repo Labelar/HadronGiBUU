@@ -155,6 +155,31 @@ void MyClass_mod::Loop() {
 
     fOut->cd();
     
+    TCanvas* c = new TCanvas("c", "Momentum Histograms", 800, 600);
+    c->SetGrid();
+    hParticleHist[0][0]->SetLineColor(kRed);
+    hParticleHist[1][0]->SetLineColor(kBlue);
+    hParticleHist[2][0]->SetLineColor(kGreen);
+    hParticleHist[3][0]->SetLineColor(kMagenta);
+    hParticleHist[4][0]->SetLineColor(kOrange);
+
+    hParticleHist[0][0]->Draw("HIST");
+    hParticleHist[1][0]->Draw("HIST SAME");
+    hParticleHist[2][0]->Draw("HIST SAME");
+    hParticleHist[3][0]->Draw("HIST SAME");
+    hParticleHist[4][0]->DRAW("HIST SAME");
+
+    TLegend* legend = new TLegend(0.7,0.7,0.9,0.9);
+    legend->AddEntry(hParticleHist[0][0], "Proton","l");
+    legend->AddEntry(hParticleHist[1][0], "Neutron", "l");
+    legend->AddEntry(hParticleHist[2][0], "+Pion","l");
+    legend->AddEntry(hParticleHist[3][0], "Pi0","l");
+    legend->AddEntry(hParticleHist[4][0], "-Pion","l");
+    legend->Draw();
+
+    c->SaveAs("Momentum_histograms.png");
+
+
     //Storing cross-section wanted histograms:
     fOut->mkdir("xsec");
     fOut->cd("xsec");
