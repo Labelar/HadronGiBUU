@@ -40,7 +40,7 @@ void MyClass_mod::Loop() {
       hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mineXsec,maxeXsec);
     }
 
-    const int Ncomponents = 7
+    const int Ncomponents = 7;
     TH1D* hParticleHist[Npart][Ncomponents];
     for(int i =0; i < Npart; ++i) {
       for (int j = 0; j < Ncomponents; ++j) {
@@ -90,7 +90,7 @@ void MyClass_mod::Loop() {
             
             double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
 
-            int idx = -1
+            int idx = -1;
             if (pdg[i] == 2212) idx = 0;   //proton
             else if (pdg[i] == 2112) idx = 1;  //Neutron
             else if (pdg[i] == 211) idx = 2;   //+Pion
