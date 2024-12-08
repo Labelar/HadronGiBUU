@@ -73,44 +73,43 @@ void MyClass_mod::Loop() {
 	int Npi0 = 0; //number of pi0
 
 	for (int i = 0; i < nparts; i++) {
-
-
-
-	    //counting pions
-  	    if(pdg[i] ==  211) ++Npip;
-  	    if(pdg[i] == -211) ++Npim; 
-  	    if(pdg[i] ==  111) ++Npi0;    
+    double energy = E[i];
+    if ((pdg[i] == 2212 || pdg[i] == 2112) && energy > 10.0) {   
 	  
-            hwgt->Fill(wgt);
-            hEin->Fill(Ein);
-            hnparts->Fill(nparts);
-            hPDG->Fill(pdg[i]);
-            hinter->Fill(inter[i]);
-            hhist->Fill(hist[i]);
-            
-            double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
-
-            int idx = -1;
-            if (pdg[i] == 2212) idx = 0;   //proton
-            else if (pdg[i] == 2112) idx = 1;  //Neutron
-            else if (pdg[i] == 211) idx = 2;   //+Pion
-            else if (pdg[i] == 111) idx = 3;   //Pi0
-            else if (pdg[i] == -211) idx = 4;   //-pion
-
-            if (idx >= 0) {
-              hE[idx]->Fill(E[i], wgt);
-              hParticleHist[idx][0]->Fill(totalmomentum, wgt);
-
-              hParticleHist[idx][1]->Fill(px[i], wgt);
-              hParticleHist[idx][2]->Fill(py[i], wgt);
-              hParticleHist[idx][3]->Fill(pz[i], wgt);
-              hParticleHist[idx][4]->Fill(vx[i], wgt);
-              hParticleHist[idx][5]->Fill(vy[i], wgt);
-              hParticleHist[idx][6]->Fill(vz[i], wgt);
+       hwgt->Fill(wgt);
+       hEin->Fill(Ein);
+       hnparts->Fill(nparts);
+       hPDG->Fill(pdg[i]);
+       hinter->Fill(inter[i]);
+       hhist->Fill(hist[i]);
+       
+       double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
+       
+       int idx = -1;
+       if (pdg[i] == 2212) idx = 0;   //proton
+       else if (pdg[i] == 2112) idx = 1;  //Neutron
+       else if (pdg[i] == 211) idx = 2;   //+Pion
+       else if (pdg[i] == 111) idx = 3;   //Pi0
+       else if (pdg[i] == -211) idx = 4;   //-pion
+       
+       if (idx >= 0) {
+        hE[idx]->Fill(E[i], wgt);
+        hParticleHist[idx][0]->Fill(totalmomentum, wgt);
+        hParticleHist[idx][1]->Fill(px[i], wgt);
+        hParticleHist[idx][2]->Fill(py[i], wgt);
+        hParticleHist[idx][3]->Fill(pz[i], wgt);
+        hParticleHist[idx][4]->Fill(vx[i], wgt);
+        hParticleHist[idx][5]->Fill(vy[i], wgt);
+        hParticleHist[idx][6]->Fill(vz[i], wgt);
+        
             }
             
         }
-
+    //counting pions
+  	    if(pdg[i] ==  211) ++Npip;
+  	    if(pdg[i] == -211) ++Npim; 
+  	    if(pdg[i] ==  111) ++Npi0; 
+  }
 	//Finding the index of the cross-section type
 	int idx = -1;
 	if(Npip==0 && Npim==0 && Npi0==0) idx = 1;
@@ -123,35 +122,6 @@ void MyClass_mod::Loop() {
 	 
     }
 
-    hParticleHist[0][0]->GetXaxis()->SetRangeUser(0,2);
-    hParticleHist[0][1]->GetXaxis()->SetRangeUser(-1.4,1.4);
-    hParticleHist[0][2]->GetXaxis()->SetRangeUser(-1.4,1.4);
-    hParticleHist[0][3]->GetXaxis()->SetRangeUser(-1.4,1.4);
-    hParticleHist[0][4]->GetXaxis()->SetRangeUser(-1.4,1.4);
-
-    hParticleHist[1][0]->GetXaxis()->SetRangeUser(0,2);
-    hParticleHist[1][1]->GetXaxis()->SetRangeUser(-1.4,1.4);
-    hParticleHist[1][2]->GetXaxis()->SetRangeUser(-1.4,1.4);
-    hParticleHist[1][3]->GetXaxis()->SetRangeUser(-1.2,2);
-    hParticleHist[1][4]->GetXaxis()->SetRangeUser(-1.4,1.4);
-    
-    hParticleHist[2][0]->GetXaxis()->SetRangeUser(0,1.4);
-    hParticleHist[2][1]->GetXaxis()->SetRangeUser(-1,1);
-    hParticleHist[2][2]->GetXaxis()->SetRangeUser(-1,1);
-    hParticleHist[2][3]->GetXaxis()->SetRangeUser(-1,1.3);
-    hParticleHist[2][4]->GetXaxis()->SetRangeUser(-1,1);
-      
-    hParticleHist[3][0]->GetXaxis()->SetRangeUser(0,1.3);
-    hParticleHist[3][1]->GetXaxis()->SetRangeUser(-1,1);
-    hParticleHist[3][2]->GetXaxis()->SetRangeUser(-1,1);
-    hParticleHist[3][3]->GetXaxis()->SetRangeUser(-1,1.3);
-    hParticleHist[3][4]->GetXaxis()->SetRangeUser(-1,1);
-
-    hParticleHist[4][0]->GetXaxis()->SetRangeUser(0,1.2);
-    hParticleHist[4][1]->GetXaxis()->SetRangeUser(-1,1);
-    hParticleHist[4][2]->GetXaxis()->SetRangeUser(-1,1);
-    hParticleHist[4][3]->GetXaxis()->SetRangeUser(-1,1.3);
-    hParticleHist[4][4]->GetXaxis()->SetRangeUser(-1,1);
 
     fOut->cd();
     
