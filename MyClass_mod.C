@@ -5,89 +5,88 @@
 #include <TCanvas.h>
 
 void MyClass_mod::Loop() {
-    
-    TH1D* hwgt = new TH1D("hwgt", "wgt", 100, -1, 2);
-    TH1D* hEin = new TH1D("hEin", "Ein", 100, -1, 2);
-    TH1D* hnparts = new TH1D("hnparts", "", 100, -1, 50);
-    TH1D* hPDG = new TH1D("hPDG", "PDG", 100, -1000, 2500);
-    TH1D* hinter = new TH1D("hinter", "", 100, -3000, 250000);
-    TH1D* hhist =new TH1D("hhist", "", 100,-1, 2); 
+  
+  TH1D* hwgt = new TH1D("hwgt", "wgt", 100, -1, 2);
+  TH1D* hEin = new TH1D("hEin", "Ein", 100, -1, 2);
+  TH1D* hnparts = new TH1D("hnparts", "", 100, -1, 50);
+  TH1D* hPDG = new TH1D("hPDG", "PDG", 100, -1000, 2500);
+  TH1D* hinter = new TH1D("hinter", "", 100, -3000, 250000);
+  TH1D* hhist =new TH1D("hhist", "", 100,-1, 2); 
 
-    const int Npart = 5;
-    const char* particles[Npart] = {"proton", "neutron", "pip", "pi0", "pim"};
-    const char* properties[] = {"Tmom", "px", "py", "pz", "vx", "vy", "vz"};
+  const int Npart = 5;
+  const char* particles[Npart] = {"proton", "neutron", "pip", "pi0", "pim"};
+  const char* properties[] = {"Tmom", "px", "py", "pz", "vx", "vy", "vz"};
 
     //Energy histograms
-    const int ENint = 5;
-    const char* Ecint[ENint] = {"proton","neutron","pip","pi0","pim"};
-    int ENbins = 1000;
-    double Emine = -0.0005;
-    double Emaxe = 2;
-    TH1D* hE[ENint];
-    for(int i=0;i<ENint;i++){
-      hE[i] = new TH1D(Form("hE_%s", Ecint[i]),"",ENbins,Emine,Emaxe);
-    }
+  const int ENint = 5;
+  const char* Ecint[ENint] = {"proton","neutron","pip","pi0","pim"};
+  int ENbins = 1000;
+  double Emine = -0.0005;
+  double Emaxe = 2;
+  TH1D* hE[ENint];
+  for(int i=0;i<ENint;i++){
+    hE[i] = new TH1D(Form("hE_%s", Ecint[i]),"",ENbins,Emine,Emaxe);
+  }
 
 
     //New histograms:
-    const int NintXsec = 6;
-    const char* cintXsec[NintXsec] = {"rea","abs","pip","pim","pi0","2pi"};    
-    int NbinsXsec   =    1002;
-    double mineXsec = -0.0005;
-    double maxeXsec = 1.0015;
-    TH1D* hxsec[NintXsec];
-    for(int i=0;i<NintXsec;i++){
-      hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mineXsec,maxeXsec);
-    }
+  const int NintXsec = 6;
+  const char* cintXsec[NintXsec] = {"rea","abs","pip","pim","pi0","2pi"};    
+  int NbinsXsec   =    1002;
+  double mineXsec = -0.0005;
+  double maxeXsec = 1.0015;
+  TH1D* hxsec[NintXsec];
+  for(int i=0;i<NintXsec;i++){
+    hxsec[i] = new TH1D(Form("hxsec_%s",cintXsec[i]),"",NbinsXsec,mineXsec,maxeXsec);
+  }
 
-    const int Ncomponents = 7;
-    TH1D* hParticleHist[Npart][Ncomponents];
-    for(int i =0; i < Npart; ++i) {
-      for (int j = 0; j < Ncomponents; ++j) {
-        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 750, -10, 10);
-      }  
-    }
+  const int Ncomponents = 7;
+  TH1D* hParticleHist[Npart][Ncomponents];
+  for(int i =0; i < Npart; ++i) {
+    for (int j = 0; j < Ncomponents; ++j) {
+      hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 750, -10, 10);
+    }  
+  }
 
-    if (fChain == 0) return;
+  if (fChain == 0) return;
 
-    Long64_t nentries = fChain->GetEntriesFast();
+  Long64_t nentries = fChain->GetEntriesFast();
 
-    Long64_t nbytes = 0, nb = 0;
-    for (Long64_t jentry = 0; jentry < nentries; jentry++) {
-        Long64_t ientry = LoadTree(jentry);
-        if (ientry < 0) break;
-        nb = fChain->GetEntry(jentry);
-        nbytes += nb;
+  Long64_t nbytes = 0, nb = 0;
+  for (Long64_t jentry = 0; jentry < nentries; jentry++) {
+      Long64_t ientry = LoadTree(jentry);
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);
+      nbytes += nb;
+      
+      if(inter[0] == -999){
+	    if(nparts>1)std::cout<<"=> Warning (inter[0] == -999) events with nparts = "<<nparts<<std::endl;
+	    continue;
+	    }
 
-
-	if(inter[0] == -999){
-	  if(nparts>1)std::cout<<"=> Warning (inter[0] == -999) events with nparts = "<<nparts<<std::endl;
-	  continue;
-	}
-
-	//first, filling the reaction (total) cross section
-	hxsec[0]->Fill(Ein,wgt);
+	    //first, filling the reaction (total) cross section
+	  hxsec[0]->Fill(Ein,wgt);
 	
-	int Npip = 0; //number of pi+
-	int Npim = 0; //number of pi-
-	int Npi0 = 0; //number of pi0
+	  int Npip = 0; //number of pi+
+	  int Npim = 0; //number of pi-
+	  int Npi0 = 0; //number of pi0
 
-	for (int i = 0; i < nparts; i++) {   
-    hwgt->Fill(wgt);
-    hEin->Fill(Ein);
-    hnparts->Fill(nparts);
-    hPDG->Fill(pdg[i]);
-    hinter->Fill(inter[i]);
-    hhist->Fill(hist[i]);
+	  for (int i = 0; i < nparts; i++) {   
+      hwgt->Fill(wgt);
+      hEin->Fill(Ein);
+      hnparts->Fill(nparts);
+      hPDG->Fill(pdg[i]);
+      hinter->Fill(inter[i]);
+      hhist->Fill(hist[i]);
        
-    double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
+      double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
        
-    int idy = -1;
-    if (pdg[i] == 2212 && E[i] > 10.0) idy = 0;   //Proton
-    else if (pdg[i] == 2112) idy = 1;  //Neutron
-    else if (pdg[i] == 211) idy = 2;   //+Pion
-    else if (pdg[i] == 111) idy = 3;   //Pi0
-    else if (pdg[i] == -211) idy = 4;   //-pion
+      int idy = -1;
+      if (pdg[i] == 2212 && E[i] > 10.0) idy = 0;   //Proton
+      else if (pdg[i] == 2112) idy = 1;  //Neutron
+      else if (pdg[i] == 211) idy = 2;   //+Pion
+      else if (pdg[i] == 111) idy = 3;   //Pi0
+      else if (pdg[i] == -211) idy = 4;   //-pion
        
       if (idy >= 0) {
       hE[idy]->Fill(E[i], wgt);
@@ -117,11 +116,8 @@ void MyClass_mod::Loop() {
 
 	    if(idx>0)hxsec[idx]->Fill(Ein,wgt);
 	 
+    }
   }
-  
-
-
-  fOut->cd();
     
   TH1D* Mhist = new TH1D("Mhist", "Momentum Histograms", 100, -10, 10);
 
@@ -164,8 +160,8 @@ void MyClass_mod::Loop() {
   fOut->cd("xsec");
     
   for(int i=0;i<NintXsec;i++){
-  hxsec[i]->Scale(1./double(fNtrees));
-  hxsec[i]->Write();
+    hxsec[i]->Scale(1./double(fNtrees));
+    hxsec[i]->Write();
   }
 
   fOut->cd();    
@@ -200,7 +196,7 @@ void MyClass_mod::Loop() {
 
 
   fOut->Close();
-    }
+  
 }
 
     
