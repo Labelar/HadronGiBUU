@@ -136,12 +136,12 @@ void MyClass_mod::Loop() {
   hParticleHist[3][0]->SetLineColor(kMagenta);
   hParticleHist[4][0]->SetLineColor(kOrange);
 
-  hstack->Add(hParticleHist[0][0])
+  hstack->Add(hParticleHist[0][0]);
   hstack->Add(hParticleHist[1][0]);
   hstack->Add(hParticleHist[2][0]);
   hstack->Add(hParticleHist[3][0]);
   hstack->Add(hParticleHist[4][0]);
-  hstack->Draw("nostack")
+  hstack->Draw("nostack");
 
   TLegend* legend1 = new TLegend(0.7,0.7,0.9,0.9);
   legend1->AddEntry(hParticleHist[0][0], "Proton","l");
