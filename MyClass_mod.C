@@ -118,14 +118,15 @@ void MyClass_mod::Loop() {
 	 
     }
   }
-    
+
+  //momentum histograms
   TH1D* Mhist = new TH1D("Mhist", "Momentum Histograms", 100, -10, 10);
 
-  TCanvas *c = new TCanvas("c", "Total Momentum", 800, 600);
+  TCanvas *c1 = new TCanvas("c1", "Total Momentum", 800, 600);
   
   Mhist->Draw();
   
-  c->SetGrid();
+  c1->SetGrid();
 
   hParticleHist[0][0]->SetLineColor(kRed);
   hParticleHist[1][0]->SetLineColor(kBlue);
@@ -150,9 +151,45 @@ void MyClass_mod::Loop() {
   Mhist->GetXaxis()->SetTitle("GeV/c");
   Mhist->GetYaxis()->SetTitle("Entries");
 
-  c->Update();
+  c1->Update();
 
-  Mhist->SaveAs("Momentum_histograms.png");
+  c1->SaveAs("Momentum_histograms.png");
+
+  //Px
+  TH1D* Pxhist = new TH1D("Pxhist", "Px Histograms", 100, -10, 10); 
+
+  TCanvas *c2 = new TCanvas("c2", "Px", 800, 600);
+
+  Pxhist->Draw();
+
+  c2->SetGrid();
+
+  hParticleHist[0][1]->SetLineColor(kRed);
+  hParticleHist[1][1]->SetLineColor(kBlue);
+  hParticleHist[2][1]->SetLineColor(kGreen);
+  hParticleHist[3][1]->SetLineColor(kMagenta);
+  hParticleHist[4][1]->SetLineColor(kOrange);
+
+  hParticleHist[0][1]->Draw("HIST");
+  hParticleHist[1][1]->Draw("HIST SAME");
+  hParticleHist[2][1]->Draw("HIST SAME");
+  hParticleHist[3][1]->Draw("HIST SAME");
+  hParticleHist[4][1]->Draw("HIST SAME");
+
+  TLegend* legend = new TLegend(0.7,0.7,0.9,0.9);
+  legend->AddEntry(hParticleHist[0][1], "Proton","l");
+  legend->AddEntry(hParticleHist[1][1], "Neutron", "l");
+  legend->AddEntry(hParticleHist[2][1], "+Pion","l");
+  legend->AddEntry(hParticleHist[3][1], "Pi0","l");
+  legend->AddEntry(hParticleHist[4][1], "-Pion","l");
+  legend->Draw();
+
+  Pxhist->GetXaxis()->SetTitle("GeV/c");
+  Pxhist->GetYaxis()->SetTitle("Entries");
+
+  c2->Update();
+
+  c2->SaveAs("Px.png");
 
 
   //Storing cross-section wanted histograms:
