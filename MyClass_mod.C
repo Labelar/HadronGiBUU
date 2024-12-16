@@ -140,13 +140,13 @@ void MyClass_mod::Loop() {
   hParticleHist[3][0]->Draw("HIST SAME");
   hParticleHist[4][0]->Draw("HIST SAME");
 
-  TLegend* legend = new TLegend(0.7,0.7,0.9,0.9);
-  legend->AddEntry(hParticleHist[0][0], "Proton","l");
-  legend->AddEntry(hParticleHist[1][0], "Neutron", "l");
-  legend->AddEntry(hParticleHist[2][0], "+Pion","l");
-  legend->AddEntry(hParticleHist[3][0], "Pi0","l");
-  legend->AddEntry(hParticleHist[4][0], "-Pion","l");
-  legend->Draw();
+  TLegend* legend1 = new TLegend(0.7,0.7,0.9,0.9);
+  legend1->AddEntry(hParticleHist[0][0], "Proton","l");
+  legend1->AddEntry(hParticleHist[1][0], "Neutron", "l");
+  legend1->AddEntry(hParticleHist[2][0], "+Pion","l");
+  legend1->AddEntry(hParticleHist[3][0], "Pi0","l");
+  legend1->AddEntry(hParticleHist[4][0], "-Pion","l");
+  legend1->Draw();
 
   Mhist->GetXaxis()->SetTitle("GeV/c");
   Mhist->GetYaxis()->SetTitle("Entries");
@@ -176,13 +176,13 @@ void MyClass_mod::Loop() {
   hParticleHist[3][1]->Draw("HIST SAME");
   hParticleHist[4][1]->Draw("HIST SAME");
 
-  TLegend* legend = new TLegend(0.7,0.7,0.9,0.9);
-  legend->AddEntry(hParticleHist[0][1], "Proton","l");
-  legend->AddEntry(hParticleHist[1][1], "Neutron", "l");
-  legend->AddEntry(hParticleHist[2][1], "+Pion","l");
-  legend->AddEntry(hParticleHist[3][1], "Pi0","l");
-  legend->AddEntry(hParticleHist[4][1], "-Pion","l");
-  legend->Draw();
+  TLegend* legend2 = new TLegend(0.7,0.7,0.9,0.9);
+  legend2->AddEntry(hParticleHist[0][1], "Proton","l");
+  legend2->AddEntry(hParticleHist[1][1], "Neutron", "l");
+  legend2->AddEntry(hParticleHist[2][1], "+Pion","l");
+  legend2->AddEntry(hParticleHist[3][1], "Pi0","l");
+  legend2->AddEntry(hParticleHist[4][1], "-Pion","l");
+  legend2->Draw();
 
   Pxhist->GetXaxis()->SetTitle("GeV/c");
   Pxhist->GetYaxis()->SetTitle("Entries");
