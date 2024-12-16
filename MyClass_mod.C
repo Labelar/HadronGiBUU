@@ -82,22 +82,22 @@ void MyClass_mod::Loop() {
        
     double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
        
-    int idx = -1;
-    if (pdg[i] == 2212 && E > 10.0) idx = 0;   //Proton
-    else if (pdg[i] == 2112) idx = 1;  //Neutron
-    else if (pdg[i] == 211) idx = 2;   //+Pion
-    else if (pdg[i] == 111) idx = 3;   //Pi0
-    else if (pdg[i] == -211) idx = 4;   //-pion
+    int idy = -1;
+    if (pdg[i] == 2212 && E[i] > 10.0) idy = 0;   //Proton
+    else if (pdg[i] == 2112) idy = 1;  //Neutron
+    else if (pdg[i] == 211) idy = 2;   //+Pion
+    else if (pdg[i] == 111) idy = 3;   //Pi0
+    else if (pdg[i] == -211) idy = 4;   //-pion
        
-      if (idx >= 0) {
-      hE[idx]->Fill(E[i], wgt);
-      hParticleHist[idx][0]->Fill(totalmomentum, wgt);
-      hParticleHist[idx][1]->Fill(px[i], wgt);
-      hParticleHist[idx][2]->Fill(py[i], wgt);
-      hParticleHist[idx][3]->Fill(pz[i], wgt);
-      hParticleHist[idx][4]->Fill(vx[i], wgt);
-      hParticleHist[idx][5]->Fill(vy[i], wgt);
-      hParticleHist[idx][6]->Fill(vz[i], wgt);
+      if (idy >= 0) {
+      hE[idy]->Fill(E[i], wgt);
+      hParticleHist[idy][0]->Fill(totalmomentum, wgt);
+      hParticleHist[idy][1]->Fill(px[i], wgt);
+      hParticleHist[idy][2]->Fill(py[i], wgt);
+      hParticleHist[idy][3]->Fill(pz[i], wgt);
+      hParticleHist[idy][4]->Fill(vx[i], wgt);
+      hParticleHist[idy][5]->Fill(vy[i], wgt);
+      hParticleHist[idy][6]->Fill(vz[i], wgt);
 
       }
             
@@ -107,7 +107,7 @@ void MyClass_mod::Loop() {
   	  if(pdg[i] == -211) ++Npim; 
   	  if(pdg[i] ==  111) ++Npi0; 
 
-	//Finding the index of the cross-section type
+	    //Finding the index of the cross-section type
 	    int idx = -1;
 	    if(Npip==0 && Npim==0 && Npi0==0) idx = 1;
 	    if(Npip==1 && Npim==0 && Npi0==0) idx = 2;
@@ -123,8 +123,14 @@ void MyClass_mod::Loop() {
 
   fOut->cd();
     
-  TH1D* Mhist = new TH1D("Mhist", "Momentum Histograms", 800, 600);
-  Mhist->SetGrid();
+  TH1D* Mhist = new TH1D("Mhist", "Momentum Histograms", 100, -10, 10);
+
+  TCanvas *c = new TCanvas("c", "Total Momentum", 800, 600);
+  
+  Mhist->Draw();
+  
+  c->SetGrid();
+
   hParticleHist[0][0]->SetLineColor(kRed);
   hParticleHist[1][0]->SetLineColor(kBlue);
   hParticleHist[2][0]->SetLineColor(kGreen);
@@ -144,6 +150,11 @@ void MyClass_mod::Loop() {
   legend->AddEntry(hParticleHist[3][0], "Pi0","l");
   legend->AddEntry(hParticleHist[4][0], "-Pion","l");
   legend->Draw();
+
+  Mhist->GetXaxis()->SetTitle("GeV/c");
+  Mhist->GetYaxis()->SetTitle("Entries");
+
+  c->Update();
 
   Mhist->SaveAs("Momentum_histograms.png");
 
