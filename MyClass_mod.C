@@ -159,6 +159,8 @@ void MyClass_mod::Loop() {
   c1->SaveAs("Momentum_histograms.png");
 
   //Px
+  THStack *hstack1 = new THStack();
+
   TH1D* Pxhist = new TH1D("Pxhist", "Px Histograms", 100, -10, 10); 
 
   TCanvas *c2 = new TCanvas("c2", "Px", 800, 600);
@@ -173,11 +175,12 @@ void MyClass_mod::Loop() {
   hParticleHist[3][1]->SetLineColor(kMagenta);
   hParticleHist[4][1]->SetLineColor(kOrange);
 
-  hParticleHist[0][1]->Draw("HIST");
-  hParticleHist[1][1]->Draw("HIST SAME");
-  hParticleHist[2][1]->Draw("HIST SAME");
-  hParticleHist[3][1]->Draw("HIST SAME");
-  hParticleHist[4][1]->Draw("HIST SAME");
+  hstack1->Add(hParticleHist[0][0]);
+  hstack1->Add(hParticleHist[1][0]);
+  hstack1->Add(hParticleHist[2][0]);
+  hstack1->Add(hParticleHist[3][0]);
+  hstack1->Add(hParticleHist[4][0]);
+  hstack1->Draw("nostack");
 
   TLegend* legend2 = new TLegend(0.7,0.7,0.9,0.9);
   legend2->AddEntry(hParticleHist[0][1], "Proton","l");
