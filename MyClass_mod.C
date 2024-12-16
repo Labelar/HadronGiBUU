@@ -72,126 +72,128 @@ void MyClass_mod::Loop() {
 	int Npim = 0; //number of pi-
 	int Npi0 = 0; //number of pi0
 
-	for (int i = 0; i < nparts; i++) {
-    double energy = E[i];
-    if ((pdg[i] == 2212 || pdg[i] == 2112) && energy > 10.0) {   
-	  
-       hwgt->Fill(wgt);
-       hEin->Fill(Ein);
-       hnparts->Fill(nparts);
-       hPDG->Fill(pdg[i]);
-       hinter->Fill(inter[i]);
-       hhist->Fill(hist[i]);
+	for (int i = 0; i < nparts; i++) {   
+    hwgt->Fill(wgt);
+    hEin->Fill(Ein);
+    hnparts->Fill(nparts);
+    hPDG->Fill(pdg[i]);
+    hinter->Fill(inter[i]);
+    hhist->Fill(hist[i]);
        
-       double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
+    double totalmomentum = sqrt(px[i]*px[i] + py[i]*py[i] + pz[i]*pz[i]);
        
-       int idx = -1;
-       if (pdg[i] == 2212) idx = 0;   //proton
-       else if (pdg[i] == 2112) idx = 1;  //Neutron
-       else if (pdg[i] == 211) idx = 2;   //+Pion
-       else if (pdg[i] == 111) idx = 3;   //Pi0
-       else if (pdg[i] == -211) idx = 4;   //-pion
+    int idx = -1;
+    if (pdg[i] == 2212 && E > 10.0) idx = 0;   //Proton
+    else if (pdg[i] == 2112) idx = 1;  //Neutron
+    else if (pdg[i] == 211) idx = 2;   //+Pion
+    else if (pdg[i] == 111) idx = 3;   //Pi0
+    else if (pdg[i] == -211) idx = 4;   //-pion
        
-       if (idx >= 0) {
-        hE[idx]->Fill(E[i], wgt);
-        hParticleHist[idx][0]->Fill(totalmomentum, wgt);
-        hParticleHist[idx][1]->Fill(px[i], wgt);
-        hParticleHist[idx][2]->Fill(py[i], wgt);
-        hParticleHist[idx][3]->Fill(pz[i], wgt);
-        hParticleHist[idx][4]->Fill(vx[i], wgt);
-        hParticleHist[idx][5]->Fill(vy[i], wgt);
-        hParticleHist[idx][6]->Fill(vz[i], wgt);
-        
-            }
-            
-        }
-    //counting pions
-  	    if(pdg[i] ==  211) ++Npip;
-  	    if(pdg[i] == -211) ++Npim; 
-  	    if(pdg[i] ==  111) ++Npi0; 
-  }
-	//Finding the index of the cross-section type
-	int idx = -1;
-	if(Npip==0 && Npim==0 && Npi0==0) idx = 1;
-	if(Npip==1 && Npim==0 && Npi0==0) idx = 2;
-	if(Npip==0 && Npim==1 && Npi0==0) idx = 3;
-	if(Npip==0 && Npim==0 && Npi0==1) idx = 4;
-	if( (Npip + Npim + Npi0) > 1    ) idx = 5;
+      if (idx >= 0) {
+      hE[idx]->Fill(E[i], wgt);
+      hParticleHist[idx][0]->Fill(totalmomentum, wgt);
+      hParticleHist[idx][1]->Fill(px[i], wgt);
+      hParticleHist[idx][2]->Fill(py[i], wgt);
+      hParticleHist[idx][3]->Fill(pz[i], wgt);
+      hParticleHist[idx][4]->Fill(vx[i], wgt);
+      hParticleHist[idx][5]->Fill(vy[i], wgt);
+      hParticleHist[idx][6]->Fill(vz[i], wgt);
 
-	if(idx>0)hxsec[idx]->Fill(Ein,wgt);
-	 
-    }
-
-
-    fOut->cd();
-    
-    TCanvas* c = new TCanvas("c", "Momentum Histograms", 800, 600);
-    c->SetGrid();
-    hParticleHist[0][0]->SetLineColor(kRed);
-    hParticleHist[1][0]->SetLineColor(kBlue);
-    hParticleHist[2][0]->SetLineColor(kGreen);
-    hParticleHist[3][0]->SetLineColor(kMagenta);
-    hParticleHist[4][0]->SetLineColor(kOrange);
-
-    hParticleHist[0][0]->Draw("HIST");
-    hParticleHist[1][0]->Draw("HIST SAME");
-    hParticleHist[2][0]->Draw("HIST SAME");
-    hParticleHist[3][0]->Draw("HIST SAME");
-    hParticleHist[4][0]->DRAW("HIST SAME");
-
-    TLegend* legend = new TLegend(0.7,0.7,0.9,0.9);
-    legend->AddEntry(hParticleHist[0][0], "Proton","l");
-    legend->AddEntry(hParticleHist[1][0], "Neutron", "l");
-    legend->AddEntry(hParticleHist[2][0], "+Pion","l");
-    legend->AddEntry(hParticleHist[3][0], "Pi0","l");
-    legend->AddEntry(hParticleHist[4][0], "-Pion","l");
-    legend->Draw();
-
-    c->SaveAs("Momentum_histograms.png");
-
-
-    //Storing cross-section wanted histograms:
-    fOut->mkdir("xsec");
-    fOut->cd("xsec");
-    for(int i=0;i<NintXsec;i++){
-      hxsec[i]->Scale(1./double(fNtrees));
-      hxsec[i]->Write();
-    }
-
-    fOut->cd();
-    
-    fOut->mkdir("Energy");
-    fOut->cd("Energy");
-    for(int i=0;i<ENint;i++){
-      hE[i]->Scale(1./double(fNtrees));
-      hE[i]->Write();
-    }
-
-    fOut->cd();
-
-    fOut->mkdir("Components");
-    fOut->cd("Components");
-    for(int i =0; i < Npart; ++i) {
-      for (int j = 0; j < Ncomponents; ++j){
-        hParticleHist[i][j]->Write();
       }
+            
+  
+      //counting pions
+  	  if(pdg[i] ==  211) ++Npip;
+  	  if(pdg[i] == -211) ++Npim; 
+  	  if(pdg[i] ==  111) ++Npi0; 
+
+	//Finding the index of the cross-section type
+	    int idx = -1;
+	    if(Npip==0 && Npim==0 && Npi0==0) idx = 1;
+	    if(Npip==1 && Npim==0 && Npi0==0) idx = 2;
+	    if(Npip==0 && Npim==1 && Npi0==0) idx = 3;
+	    if(Npip==0 && Npim==0 && Npi0==1) idx = 4;
+	    if( (Npip + Npim + Npi0) > 1    ) idx = 5;
+
+	    if(idx>0)hxsec[idx]->Fill(Ein,wgt);
+	 
+  }
+  
+
+
+  fOut->cd();
+    
+  TH1D* Mhist = new TH1D("Mhist", "Momentum Histograms", 800, 600);
+  Mhist->SetGrid();
+  hParticleHist[0][0]->SetLineColor(kRed);
+  hParticleHist[1][0]->SetLineColor(kBlue);
+  hParticleHist[2][0]->SetLineColor(kGreen);
+  hParticleHist[3][0]->SetLineColor(kMagenta);
+  hParticleHist[4][0]->SetLineColor(kOrange);
+
+  hParticleHist[0][0]->Draw("HIST");
+  hParticleHist[1][0]->Draw("HIST SAME");
+  hParticleHist[2][0]->Draw("HIST SAME");
+  hParticleHist[3][0]->Draw("HIST SAME");
+  hParticleHist[4][0]->Draw("HIST SAME");
+
+  TLegend* legend = new TLegend(0.7,0.7,0.9,0.9);
+  legend->AddEntry(hParticleHist[0][0], "Proton","l");
+  legend->AddEntry(hParticleHist[1][0], "Neutron", "l");
+  legend->AddEntry(hParticleHist[2][0], "+Pion","l");
+  legend->AddEntry(hParticleHist[3][0], "Pi0","l");
+  legend->AddEntry(hParticleHist[4][0], "-Pion","l");
+  legend->Draw();
+
+  Mhist->SaveAs("Momentum_histograms.png");
+
+
+  //Storing cross-section wanted histograms:
+  fOut->mkdir("xsec");
+  fOut->cd("xsec");
+    
+  for(int i=0;i<NintXsec;i++){
+  hxsec[i]->Scale(1./double(fNtrees));
+  hxsec[i]->Write();
+  }
+
+  fOut->cd();    
+  fOut->mkdir("Energy");
+  fOut->cd("Energy");
+
+  for(int i=0;i<ENint;i++){
+    hE[i]->Scale(1./double(fNtrees));
+    hE[i]->Write();
+  }
+
+  fOut->cd();
+
+  fOut->mkdir("Components");
+  fOut->cd("Components");
+  for(int i =0; i < Npart; ++i) {
+      for (int j = 0; j < Ncomponents; ++j){
+      hParticleHist[i][j]->Write();
     }
+  }
 
-    fOut->cd();
+  fOut->cd();
 
-    hwgt->Write();
-    hEin->Write();
-    hnparts->Write();
-    hPDG->Write();
-    hinter->Write();
-    hhist->Write();
+  hwgt->Write();
+  hEin->Write();
+  hnparts->Write();
+  hPDG->Write();
+  hinter->Write();
+  hhist->Write();
     
     
 
 
-    fOut->Close();
-
-
+  fOut->Close();
+    }
 }
+
+    
+
+
 
 
