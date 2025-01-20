@@ -4,6 +4,8 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <cstring>
+#include <vector>
+#include <cmath>
 
 void MyClass_mod::Loop() {
   
@@ -55,6 +57,10 @@ void MyClass_mod::Loop() {
 
   if (fChain == 0) return;
 
+  TH1F *hProtonMomentum = new TH1F("hProtonMomentum", "proton momentum in pion absorption Events", 100, 0, 10);
+
+  std::vector<std::pair<double, double>> protonData;  //(momentum, angle)
+
   Long64_t nentries = fChain->GetEntriesFast();
 
   Long64_t nbytes = 0, nb = 0;
@@ -71,10 +77,16 @@ void MyClass_mod::Loop() {
 
 	    //first, filling the reaction (total) cross section
 	  hxsec[0]->Fill(Ein,wgt);
-	
+
+    //
 	  int Npip = 0; //number of pi+
 	  int Npim = 0; //number of pi-
 	  int Npi0 = 0; //number of pi0
+
+    //
+    double highestEnergy = -1.0;
+    double highestMomentum = 0.0;
+    double highestAngle = 0.0;
 
 	  for (int i = 0; i < nparts; i++) {   
       hwgt->Fill(wgt);
@@ -104,13 +116,23 @@ void MyClass_mod::Loop() {
       hParticleHist[idy][6]->Fill(vz[i], wgt);
 
       }
-            
-  
+
       //counting pions
   	  if(pdg[i] ==  211) ++Npip;
   	  if(pdg[i] == -211) ++Npim; 
   	  if(pdg[i] ==  111) ++Npi0; 
 
+      if (pdg[i] == 2212 && E[i] > highestEnergy) {
+        highestEnergy = E[i];
+        highestMomentum = totalmomentum;
+        highestAngle = acos(pz[i] / highestMomentum);
+      }
+    }
+
+    if (highestEnergy > 0 && Npip == 0 && Npim == 0 && Npi0 == 0) {
+      hProtonMomentum->Fill(highestMomentum);
+      //protonData.push_back(std::make_pair(highestMomentum,highestAngle))
+    }
 	    //Finding the index of the cross-section type
 	    int idx = -1;
 	    if(Npip==0 && Npim==0 && Npi0==0) idx = 1;
@@ -121,9 +143,10 @@ void MyClass_mod::Loop() {
 
 	    if(idx>0)hxsec[idx]->Fill(Ein,wgt);
 	 
-    }
+    
   }
 
+  hProtonMomentum->Draw();
 
   //Momentum histograms
   THStack *hstack = new THStack();
