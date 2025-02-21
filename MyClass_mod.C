@@ -6,6 +6,7 @@
 #include <cstring>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 void MyClass_mod::Loop() {
   
@@ -23,7 +24,7 @@ void MyClass_mod::Loop() {
     //Energy histograms
   const int ENint = 5;
   const char* Ecint[ENint] = {"proton","neutron","pip","pi0","pim"};
-  int ENbins = 1000;
+  int ENbins = 1002;
   double Emine = 0;
   double Emaxe = 2;
   TH1D* hE[ENint];
@@ -48,16 +49,16 @@ void MyClass_mod::Loop() {
   for(int i =0; i < Npart; i++) {
     for (int j = 0; j < Ncomponents; j++) {   
       if (strcmp(properties[j], "vx") == 0 || strcmp(properties[j], "vy") == 0 || strcmp(properties[j], "vz") == 0) {
-        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 750, -40, 40);
+        hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 894, -40, 40);
         } else {
-            hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 750, -1, 1);         
+            hParticleHist[i][j] = new TH1D(Form("h%s_%s",particles[i], properties[j]), "", 894, -1, 1);         
         }
      }      
   }
 
   if (fChain == 0) return;
 
-  TH1F *hProtonMomentum = new TH1F("hProtonMomentum", "proton momentum in pion absorption Events", 100, 0, 10);
+  TH1F *hProtonMomentum = new TH1F("hProtonMomentum", "Proton Momentum in Pion Absorption Events", 100, 0, 2);
 
   std::vector<std::pair<double, double>> protonData;  //(momentum, angle)
 
@@ -142,11 +143,109 @@ void MyClass_mod::Loop() {
 	    if( (Npip + Npim + Npi0) > 1    ) idx = 5;
 
 	    if(idx>0)hxsec[idx]->Fill(Ein,wgt);
-	 
+    
     
   }
+  
+  //int nbins = hxsec[1]->GetNbinsX();
+    //std::vector<double> x(nbins);
+    //std::vector<double> y(nbins);
 
-  hProtonMomentum->Draw();
+    //for (int m = 0; m < nbins; ++m) {
+        //x[m] = hxsec[1]->GetXaxis()->GetBinCenter(m + 1);
+        //y[m] = hxsec[1]->GetBinContent(m + 1);  
+    //}
+
+    //TGraph *graph2 = new TGraph(nbins, x.data(), y.data());
+    //TCanvas *m = new TCanvas("m", "Energy vs Cross section", 800, 600);
+    //graph2->SetTitle("Cross section vs pion energy");
+    //graph2->SetMarkerStyle(21);
+    //graph2->SetMarkerColor(kRed);
+    //graph2->Draw("AP");
+
+  
+  double x2_values[5] = {.070, .118, .162, .239, .330};
+  
+  double y2_values[5] = {339.75, 373.75, 403.6, 438.7, 400.5};
+  
+  double y2_errors[5] = {0, 0, 0, 0, 0};
+  
+  double x2_errors[5] = {0,0,0,0,0};
+  
+  TGraphErrors* graph2 = new TGraphErrors(5, x2_values, y2_values, x2_errors, y2_errors);
+  
+  graph2->SetTitle("Total absorption cross section vs Pion energy");
+  graph2->GetXaxis()->SetTitle("Pion energy (MeV)");
+  graph2->GetYaxis()->SetTitle("Absorption Cross Section (mb)");
+  
+  
+  graph2->Write();
+  
+  
+  //for (int n = 0; n <= n_bins; ++n){
+  
+  //double energy = hE[2]->GetBinCenter(n);
+  
+  //double cross_section = hxsec[1]->GetBinContent(n);
+  
+    //if(cross_section > 0) {
+      //pion_energies.push_back(energy);
+      //absorption_cross_section.push_back(cross_section);
+    //}
+  //}
+  
+  //TGraph* graph1 = new TGraph(pion_energies.size(), &pion_energies[0], &absorption_cross_section[0]);
+  
+  //graph1->SetTitle("Total Absorption Cross Section vs Pion Energy");
+  //graph1->GetXaxis()->SetTitle("Pion Energy (MeV)");
+  //graph1->GetYaxis()->SetTitle("Absorption Cross Section (mb)");
+  
+  //
+  
+  double x_values[5] = {.070, .118, .162, .239, .330};
+  
+  double y_values[5] = {180, 320, 351, 283, 225};
+  
+  double y_errors[5] = {43, 65, 40, 28, 17};
+  
+  double x_errors[5] = {0,0,0,0,0};
+  
+  TGraphErrors* graph = new TGraphErrors(5, x_values, y_values, x_errors, y_errors);
+  
+  graph->SetTitle("Total absorption cross section vs Pion energy");
+  graph->GetXaxis()->SetTitle("Pion energy (MeV)");
+  graph->GetYaxis()->SetTitle("Absorption Cross Section (mb)");
+  
+  
+  TCanvas* canvas = new TCanvas("canvas", "Canvas for graph", 800, 600);
+  
+  //graph2->GetXaxis()->SetRangeUser(0,0.4);
+  
+  //graph2->Scale(1./10);
+  graph2->SetMarkerStyle(21);
+  graph2->Draw("AP");
+  
+  graph->SetMarkerStyle(22);
+  graph->Draw("P SAME");
+  
+  graph2->GetYaxis()->SetRangeUser(0, 500);  
+  graph->GetYaxis()->SetRangeUser(0, 500);
+    
+  TLegend* legend = new TLegend(0.75, 0.85, 0.85, 0.95);
+  legend->SetTextSize(0.03);
+    legend->AddEntry(graph, "LADS", "P");
+    legend->AddEntry(graph2, "GiBUU", "P");
+    legend->Draw();
+  
+  canvas->Update();
+  
+  canvas->SaveAs("xvsE.png");
+  
+  graph->Write();
+  
+  //graph1-> Write();
+
+  hProtonMomentum->Write();
 
   //Momentum histograms
   THStack *hstack = new THStack();
@@ -536,9 +635,28 @@ void MyClass_mod::Loop() {
 
   c10->Update();
 
-  c10->SaveAs("Vz2.png");  
+  c10->SaveAs("Vz2.png");
+  
+  //highest energetic proton in case of pion absorption
+  THStack *hPstack = new THStack();
+  
+  TCanvas *c11 = new TCanvas("c11", "hP", 800, 600);
+  
+  c11->SetGrid();
+  
+  hPstack->Add(hProtonMomentum);
+  hPstack->Draw();
+  
+  hPstack->GetXaxis()->SetTitle("GeV/c");
+  hPstack->GetYaxis()->SetTitle("");
+  
+  c11->Update();
+  
+  c11->SaveAs("highest_energetic_proton_in_the_case_of_pion_absorption.png");
 
+  //
 
+  
   //Storing cross-section wanted histograms:
   fOut->mkdir("xsec");
   fOut->cd("xsec");
